@@ -46,4 +46,6 @@ def get_insert_statements():
         ).strftime("%Y-%m-%d")
         insert_statements.append(f"INSERT INTO product (name, current_price, old_price, created_date, updated_date, expiry_date) VALUES ('{name}', '{current_price}', '{old_price}', '{created_date}', '{updated_date}', '{expiry_date}');")
 
+
     return insert_statements
+
