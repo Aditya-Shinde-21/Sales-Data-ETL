@@ -3,7 +3,6 @@ import traceback
 from scripts.main.utility.logging_config import *
 
 class S3Reader:
-
     def list_files(self, s3_client, bucket_name,folder_path):
         try:
             response = s3_client.list_objects_v2(Bucket=bucket_name,Prefix=folder_path)
@@ -20,18 +19,3 @@ class S3Reader:
             logger.error("Got this error : %s",error_message)
             print(traceback_message)
             raise
-
-
-################### Directory will also be available if you use this ###########
-
-    # def list_files(self, bucket_name):
-    #     try:
-    #         response = self.s3_client.list_objects_v2(Bucket=bucket_name)
-    #         if 'Contents' in response:
-    #             files = [f"s3://{bucket_name}/{obj['Key']}" for obj in response['Contents']]
-    #             return files
-    #         else:
-    #             return []
-    #     except Exception as e:
-    #         print(f"Error listing files: {e}")
-    #         return []
