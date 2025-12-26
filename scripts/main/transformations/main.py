@@ -147,9 +147,9 @@ if correct_files:
         parsed = urlparse(file)
         filename = parsed.path.rstrip("/").split("/")[-1]
 
-        statement = f'''INSERT INTO {config.database_name}.{config.staging_table}\
-                        (file_name, file_location, created_date, status)\
-                        VALUES ('{filename}', '{file}', '{formatted_date}', 'A')'''
+        statement = f"INSERT INTO {config.database_name}.{config.staging_table}"\
+                        f"(file_name, file_location, created_date, status)"\
+                        f"VALUES ('{filename}', '{file}', '{formatted_date}', 'A');"
         insert_statements.append(statement)
 
     logger.info(f"Insert statements created for staging table --- {insert_statements}")
@@ -253,8 +253,8 @@ fact_dimension_join_df = dimension_table_joins(final_df_to_process,
 final_df_to_process.unpersist(blocking=True )
 fact_dimension_join_df.persist(StorageLevel.MEMORY_AND_DISK)
 # Final enriched data
-#logger.info("******************* Final Enriched Data *********************")
-#fact_dimension_join_df.show()
+logger.info("******************* Final Enriched Data *********************")
+fact_dimension_join_df.show()
 
 # **************************************************************************************************
 # Write the customer data into customer data mart in parquet format
@@ -308,7 +308,7 @@ final_sales_team_data_mart_df.show()
 s3_output_path = f"s3a://{config.bucket_name}/{config.s3_sales_datamart_directory}/sales_datamart.parquet"
 parquet_writer.write_to_format(final_sales_team_data_mart_df, s3_output_path)
 print("Dataframe written to:", s3_output_path)
-"""
+
 # **************************************************************************************************
 # Also writing the data into partitions for sales data mart
 logger.info("******************** writing sales data mart partitioned **************************")
@@ -322,7 +322,7 @@ final_sales_team_data_mart_df.write.format("parquet")\
     .save()
     
 print("Dataframe written to:", s3_output_path)
-"""
+
 # **************************************************************************************************
 # Transformations on customer data
 # Find out the total purchase amount every month of a customer
@@ -341,10 +341,10 @@ sales_mart_calculation_table_write(final_sales_team_data_mart_df)
 logger.info("************ Calculation done and data written into table ***********")
 
 # **************************************************************************************************
+# unpersist any persisted dataframes
 fact_dimension_join_df.unpersist(blocking=True)
-sys.exit()
-# **************************************************************************************************
 
+# **************************************************************************************************
 # Move the files on s3 source directory to processed folder
 for file_path in correct_files:
     message = move_file_s3_to_s3(s3_client=s3_client,
@@ -354,7 +354,6 @@ for file_path in correct_files:
     logger.info(f"moved to {message}")
 
 # **************************************************************************************************
-
 # Update processed file status as Inactive(I) in staging table
 if correct_files:
     update_statements = []
@@ -363,10 +362,9 @@ if correct_files:
         parsed = urlparse(file)
         filename = parsed.path.rstrip("/").split("/")[-1]
 
-        statement = f'''UPDATE {config.database_name}.{config.staging_table}
-                        SET status = 'I', updated_date = '{formatted_date}'
-                        WHERE file_name = '{filename}' '''
-
+        statement = f"UPDATE {config.database_name}.{config.staging_table}"\
+                    f"SET status = 'I', updated_date = '{formatted_date}'"\
+                    f"WHERE file_name = '{filename}';"
         update_statements.append(statement)
 
         logger.info(f"Update statements created for staging table --- {update_statements}")
@@ -380,7 +378,6 @@ if correct_files:
             connection.commit()
         cursor.close()
         connection.close()
-
 else:
     logger.error("************** There is some error in process please check ********************")
     sys.exit()
@@ -389,4 +386,5 @@ else:
 # Spark session terminates with this program
 # Monitor/analyze jobs in spark webUI then press any key to terminate
 input("Press any key to terminate: ")
+
 sys.exit()
