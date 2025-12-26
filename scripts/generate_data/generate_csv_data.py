@@ -29,7 +29,7 @@ sales_persons = {
 start_date = datetime(2021, 1, 1)
 end_date = datetime(2025, 12, 31)
 
-file_location = "D:\\DE_Project_Files\\sales_data_to_s3\\"
+file_location = "filepath where csv file is to be saved"
 csv_file_path = os.path.join(file_location, "sales_data.csv")
 
 connection = get_mysql_connection()
@@ -48,15 +48,14 @@ with open(csv_file_path, "w", newline="") as csvfile:
         cursor.execute(statement)
         data = cursor.fetchall()
         price = data[0][0]
-        #product_name = data[0][0]
         sales_date = start_date + timedelta(days=random.randint(0, (end_date - start_date).days))
         sales_person_id = random.choice(sales_persons[store_id])
         quantity = random.randint(1, 10)
-        #price = products[product_name]
         total_cost = price * quantity
 
         csvwriter.writerow([customer_id, store_id, product_id, sales_date.strftime("%Y-%m-%d"), sales_person_id, price, quantity, total_cost])
 
 cursor.close()
 connection.close()
+
 print("CSV file generated successfully.")
