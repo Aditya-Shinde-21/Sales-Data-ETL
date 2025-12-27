@@ -36,7 +36,7 @@ This project demonstrates core **data engineering fundamentals** such as distrib
 
 | Technology | Usage |
 |----------|------|
-| Apache Spark (PySpark) | Distributed data processing |
+| Apache Spark | Distributed data processing |
 | AWS S3 | Raw and processed data storage |
 | MySQL | Dimension tables and reporting tables |
 | Parquet | Columnar storage format |
@@ -47,9 +47,12 @@ This project demonstrates core **data engineering fundamentals** such as distrib
 ## Folder Structure
 
 Sales-Data-ETL/
-├── docs/ # Architecture diagrams
-├── resources/ # Configuration files and SQL scripts
-├── scripts/ # PySpark ETL jobs
+├── docs/
+# Architecture diagrams
+├── resources/
+# Configuration files and SQL scripts
+├── scripts/
+# PySpark ETL jobs
 ├── README.md
 
 ---
