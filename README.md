@@ -116,4 +116,4 @@ pip install -r requirements.txt
 ### 4. Configure AWS and MySQL
 
 #### Configure AWS credentials for S3 access and update MySQL connection details in
-resources/dev/config.py
+```resources/dev/config.py```
