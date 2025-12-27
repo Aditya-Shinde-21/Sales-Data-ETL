@@ -32,6 +32,10 @@ This project demonstrates core **data engineering fundamentals** such as distrib
 
 ---
 
+## Database ER Diagram
+![ER Diagram](docs/database_schema.png)
+
+---
 ## Tech Stack
 
 | Technology | Usage |
