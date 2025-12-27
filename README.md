@@ -115,5 +115,11 @@ pip install -r requirements.txt
 ```
 ### 4. Configure AWS and MySQL
 
-#### Configure AWS credentials for S3 access and update MySQL connection details in
-```resources/dev/config.py```
+#### Configure AWS credentials for S3 access and update MySQL connection details in ```resources/dev/config.py```
+
+### 5. Generate data and upload it to s3
+#### Generate data from ```scripts/generate_data/generate_csv_data.py``` and ```scripts/generate_data/write_generated_data_to_database.py```
+#### Upload data to s3 from ```scripts/generate_data/upload_file_to_s3.py```
+
+### 6. ETL orchestration``` main.py ```
+#### Run ETL orchestration from ```main.py```
