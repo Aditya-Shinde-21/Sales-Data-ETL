@@ -46,15 +46,46 @@ This project demonstrates core **data engineering fundamentals** such as distrib
 
 ## Folder Structure
 
-Sales-Data-ETL/
+Project structure:-
+my_project/
 ├── docs/
-# Architecture diagrams
+│   ├── Architecture.png
+│   └── database_schema.png
 ├── resources/
-# Configuration files and SQL scripts
+│   ├── dev/
+│   │    ├── config.py
+│   │    └── requirement.txt
+│   ├── sql_scripts/
+│   │    └── create_table_scripts.sql
 ├── scripts/
-# PySpark ETL jobs
+│   ├── generate_data/
+│   │    ├── generate_csv_data.py
+│   │    ├── generate_customer_table_data.py
+│   │    ├── generate_product_table_data.py
+│   │    ├── upload_file_to_s3.py
+│   │    └── write_generated_data_to_database.py
+│   ├── main/
+│   │    └── move/
+│   │    │      └── move_files.py
+│   │    └── read/
+│   │    │      ├── aws_read.py
+│   │    │      └── database_read.py
+│   │    └── transformations/
+│   │    │      └── jobs/
+│   │    │      │     ├── customer_mart_sql_transform_write.py
+│   │    │      │     ├── dimension_tables_join.py
+│   │    │      │     └──sales_mart_sql_transform_write.py
+│   │    │      └── main.py
+│   │    └── utility/
+│   │    │      ├── encrypt_decrypt.py
+│   │    │      ├── logging_config.py
+│   │    │      ├── s3_client_object.py
+│   │    │      ├── spark_session.py
+│   │    │      └── my_sql_session.py
+│   │    └── write/
+│   │    │      ├── database_write.py
+│   │    │      └── format_writer.py
 ├── README.md
-
 ---
 
 ## How to Run
