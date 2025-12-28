@@ -217,13 +217,7 @@ final_df_to_process.persist(StorageLevel.MEMORY_AND_DISK)
 final_df_to_process.show()
 
 # **************************************************************************************************
-# Enrich the data from all dimension table
-# Also create a datamart for sales_team and their incentive, address and other attributes
-# Another datamart for customer who bought how much each day of month
-# Also store customer data partitioned by month and store_id
-# Read the data from parquet and generate a csv file in which there will be a sales_person_name,
-# sales_person_store_id, sales_person_total_billing_done_for_each_month, total_incentive
-
+## Read the data from all dimension tables
 # Connecting to MySQL with DatabaseReader
 database_client = DatabaseReader(config.url, config.properties)
 
@@ -358,6 +352,7 @@ for file_path in correct_files:
 if correct_files:
     update_statements = []
     formatted_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+  
     for file in correct_files:
         parsed = urlparse(file)
         filename = parsed.path.rstrip("/").split("/")[-1]
@@ -378,13 +373,13 @@ if correct_files:
             connection.commit()
         cursor.close()
         connection.close()
+      
 else:
     logger.error("************** There is some error in process please check ********************")
     sys.exit()
 
 # **************************************************************************************************
 # Spark session terminates with this program
-# Monitor/analyze jobs in spark webUI then press any key to terminate
-input("Press any key to terminate: ")
+# Monitor/analyze jobs in Spark UI, then press any key to terminate
 
-sys.exit()
+input("Press any key to terminate: ")
