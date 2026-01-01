@@ -1,5 +1,6 @@
 # Standard libraries
 import datetime
+import boto3
 
 # Spark libraries
 from pyspark.sql.types import *
@@ -30,7 +31,6 @@ try:
     all_files = S3Reader().list_files(s3_client=s3_client,
                                       bucket_name=config.bucket_name,
                                       folder_path=config.s3_source_directory)
-
     if not all_files:
         logger.info(f"No files available at {config.s3_source_directory} in bucket:{config.bucket_name}")
         raise Exception("No files available to process")
@@ -374,4 +374,5 @@ else:
 
 # **************************************************************************************************
 spark.stop()
+
 
