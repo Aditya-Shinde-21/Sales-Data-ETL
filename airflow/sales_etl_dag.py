@@ -8,21 +8,22 @@ from airflow.exceptions import AirflowFailException
 
 import pymysql
 
-
+# default arguments for DAG
 default_args = {
-    "owner": "Aditya",
+    "owner": "owner_name",
     "depends_on_past": False,
     "retries": 1,
     "retry_delay": timedelta(minutes=10)
 }
 
-
+# Validate ETL success from data written to database
 def validate_sales_data():
+    # Create database connection
     connection = pymysql.connect(
         host="host.docker.internal",
-        user="root",
-        password="Aditya@2025",
-        database="sales_data"
+        user="mysql_user_name",
+        password="user_password",
+        database="database_name"
     )
 
     cursor = connection.cursor()
@@ -35,7 +36,7 @@ def validate_sales_data():
     cursor.close()
     connection.close()
 
-
+# Define DAG attributes
 with DAG(
     dag_id="retail_sales_batch_etl_local",
     default_args=default_args,
@@ -43,33 +44,35 @@ with DAG(
     schedule="@daily",
     catchup=False,
 ) as dag:
-
+    
+    # s3 sensor task: ensures ETL runs only when data is available
     wait_for_sales_data = S3KeySensor(
         task_id="wait_for_sales_data",
-        bucket_name="customer-sales-data-project",
+        bucket_name="s3_bucket_name",
         bucket_key="sales_data/*.csv",
         wildcard_match=True,
-        aws_conn_id="aws_default",
+        aws_conn_id="connection_id_name",
         poke_interval=180,
         timeout=1800,
     )
 
+    # Create spark-submit for ETL task
     run_spark_etl = BashOperator(
         task_id="run_spark_etl",
         bash_command="""
-        export PYTHONPATH=/mnt/c/Users/Aditya/PycharmProjects/de_project1:$PYTHONPATH
+        export PYTHONPATH=filepath to folder containing main.py and dependencies:$PYTHONPATH
         
         spark-submit \
-        --master local[2] \
-        --conf "spark.driver.extraJavaOptions=-Dlog4j.configuration=file:/mnt/c/Users/Aditya/PycharmProjects/de_project1/resources/dev/log4j.properties" \
-        --conf "spark.executor.extraJavaOptions=-Dlog4j.configuration=file:/mnt/c/Users/Aditya/PycharmProjects/de_project1/resources/dev/log4j.properties" \
-        /mnt/c/Users/Aditya/PycharmProjects/de_project1/scripts/main/transformations/jobs/main.py
+        --master local[*] \
+        /mnt/c/filepath/to/main.py
         """
     )
 
+    # Validate ETL success
     validate_data = PythonOperator(
         task_id="validate_data",
         python_callable=validate_sales_data
     )
 
     wait_for_sales_data >> run_spark_etl >> validate_data
+
