@@ -77,4 +77,3 @@ with DAG(
     # DAG flow
     wait_for_sales_data >> run_spark_etl >> validate_data
 
-
