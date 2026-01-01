@@ -2,8 +2,8 @@
 
 ## Overview
 
-**Sales-Data-ETL** is an end-to-end batch ETL pipeline built using **PySpark**.  
-The project ingests raw sales data from **AWS S3** and dimension data from **MySQL**, applies transformations and validations using Spark, and writes the processed data back to **S3** and **MySQL** for analytics and reporting.
+**Retail-Sales-Data-ETL** is an end-to-end batch ETL pipeline built using **PySpark**.  
+The project ingests raw sales data from **AWS S3** and dimension data from **MySQL**, applies transformations and validations using Spark, and writes the processed data back to **S3** and **MySQL** for analytics and reporting. This process is orchestrated using Airflow.
 
 This project demonstrates core **data engineering fundamentals** such as distributed data processing, schema modeling, joins between fact and dimension tables, and cloud-based data storage.
 
@@ -23,8 +23,8 @@ This project demonstrates core **data engineering fundamentals** such as distrib
 ## Data Flow
 
 1. Read raw sales data from **AWS S3**.
-2. Read dimension tables from **MySQL**.
-3. Perform data validation and schema checks.
+2. Perform data validation and schema checks.
+3. Read dimension tables from **MySQL**.
 4. Apply transformations and business logic using PySpark.
 5. Write processed data to:
    - **S3** in Parquet format
@@ -44,13 +44,17 @@ This project demonstrates core **data engineering fundamentals** such as distrib
 | AWS S3 | Raw and processed data storage |
 | MySQL | Dimension tables and reporting tables |
 | Parquet | Columnar storage format |
-| Python | ETL orchestration |
+| Python | ETL orchestration|
+| Apache Airflow | ETL pipeline orchestration |
 
 ---
 
 ## Folder Structure
 ```
 Sales-Data-ETL/
+├── airflow/
+│   └── sales_etl_dag.py
+│
 ├── docs/
 │   ├── Architecture.png
 │   └── database_schema.png
@@ -88,7 +92,6 @@ Sales-Data-ETL/
 │       ├── utility/
 │       │   ├── encrypt_decrypt.py
 │       │   ├── logging_config.py
-│       │   ├── s3_client_object.py
 │       │   ├── spark_session.py
 │       │   └── my_sql_session.py
 │       │
@@ -104,7 +107,7 @@ Sales-Data-ETL/
 
 ### 1. Clone the repository
 ```
-git clone https://github.com/Aditya-Shinde-21/Sales-Data-ETL.git
+git clone https://github.com/Aditya-Shinde-21/Retail-Sales-Data-ETL-Pipeline.git
 cd Sales-Data-ETL
 ```
 ### 2. Create virtual environment
@@ -117,13 +120,17 @@ source .venv/bin/activate      # Linux / macOS
 ```
 pip install -r requirements.txt
 ```
-### 4. Configure AWS and MySQL
+Required Windows Subsystem for Linux (WSL) for Airflow if using Windows/macOS setup )
 
+### 4. Configure AWS and MySQL
 #### Configure AWS credentials for S3 access and update MySQL connection details in ![config](resources/dev/config.py)
 
-### 5. Generate data and upload it to s3
+### 5. Airflow setup
+####
+
+### 6. Generate data and upload it to s3
 #### Generate data from ![write to local](scripts/generate_data/generate_csv_data.py) and ![write to database](scripts/generate_data/write_generated_data_to_database.py)
 #### Upload data to s3 from ![upload to s3](scripts/generate_data/upload_file_to_s3.py)
 
-### 6. ETL orchestration
+### 7. ETL orchestration
 #### Run ETL orchestration from ![main](scripts/main/transformations/main.py)
