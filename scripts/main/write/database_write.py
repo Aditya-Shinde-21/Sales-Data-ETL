@@ -14,4 +14,3 @@ class DatabaseWriter:
             logger.info(f"Data successfully written into {table_name} table ")
         except Exception as e:
             return {f"Message: Error occurred {e}"}
-
