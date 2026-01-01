@@ -3,9 +3,7 @@
 ## Overview
 
 **Retail-Sales-Data-ETL** is an end-to-end batch ETL pipeline built using **PySpark**.  
-The project ingests raw sales data from **AWS S3** and dimension data from **MySQL**, applies transformations and validations using Spark, and writes the processed data back to **S3** and **MySQL** for analytics and reporting. This process is orchestrated using Airflow.
-
-This project demonstrates core **data engineering fundamentals** such as distributed data processing, schema modeling, joins between fact and dimension tables, and cloud-based data storage.
+The project ingests raw sales data from **AWS S3** and dimension data from **MySQL**, applies transformations and validations using Spark, and writes the processed data back to **S3** and **MySQL** for analytics and reporting. The pipeline is orchestrated using Apache Airflow.
 
 ---
 
@@ -40,11 +38,11 @@ This project demonstrates core **data engineering fundamentals** such as distrib
 
 | Technology | Usage |
 |----------|------|
-| Apache Spark | Distributed data processing |
+| PySpark/Apache Spark | Distributed data processing |
 | AWS S3 | Raw and processed data storage |
 | MySQL | Dimension tables and reporting tables |
 | Parquet | Columnar storage format |
-| Python | ETL orchestration|
+| Python | PySpark Transformations |
 | Apache Airflow | ETL pipeline orchestration |
 
 ---
@@ -125,12 +123,21 @@ Required Windows Subsystem for Linux (WSL) for Airflow if using Windows/macOS se
 ### 4. Configure AWS and MySQL
 #### Configure AWS credentials for S3 access and update MySQL connection details in ![config](resources/dev/config.py)
 
-### 5. Airflow setup
-####
-
-### 6. Generate data and upload it to s3
+### 5. Generate data and upload it to s3
 #### Generate data from ![write to local](scripts/generate_data/generate_csv_data.py) and ![write to database](scripts/generate_data/write_generated_data_to_database.py)
 #### Upload data to s3 from ![upload to s3](scripts/generate_data/upload_file_to_s3.py)
 
+### 6. Airflow setup
+#### Open WSL terminal and activate airflow virtual environment. Copy DAG to airflow/dags/
+```
+source ~/airflow_venv/bin/activate
+mkdir -p ~/airflow/dags
+cp /mnt/d/Retail-Sales-Data-ETL-Pipeline/airflow/sales_etl_dag.py \
+~/airflow/dags/
+```
+
 ### 7. ETL orchestration
-#### Run ETL orchestration from ![main](scripts/main/transformations/main.py)
+#### Run ETL orchestration from wsl
+```
+airflow standalone
+```
