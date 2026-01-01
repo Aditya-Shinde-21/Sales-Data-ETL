@@ -1,38 +1,30 @@
-import traceback
 from urllib.parse import urlparse
 from scripts.main.utility.logging_config import *
+from botocore.exceptions import ClientError
 
-def move_file_s3_to_s3(s3_client, s3a_path, source_directory, destination_directory):
+def move_file_s3_to_s3(s3_client, s3a_path, destination_directory):
+    parsed = urlparse(s3a_path)
+    bucket = parsed.netloc
+    source_key = parsed.path.lstrip("/")
+
+    filename = source_key.split("/")[-1]
+    destination_key = f"{destination_directory.rstrip('/')}/{filename}"
+
+    # Check if source exists
     try:
-        parsed = urlparse(s3a_path)
-        bucket = parsed.netloc
-        source_key = parsed.path.lstrip("/")
+        s3_client.head_object(Bucket=bucket, Key=source_key)
+    except ClientError as e:
+        if e.response["Error"]["Code"] == "404":
+            logger.warning(f"Source file already moved or missing: {source_key}, Skipping.")
+            return None
+        else:
+            raise
+    # Copy
+    s3_client.copy_object(Bucket=bucket,
+                          CopySource={"Bucket": bucket, "Key": source_key},
+                          Key=destination_key)
 
-        # Safety check
-        if not source_key.startswith(source_directory):
-            raise ValueError(f"File not under source directory: {source_key}")
+    # Delete
+    s3_client.delete_object(Bucket=bucket, Key=source_key)
 
-        # Preserve filename
-        filename = source_key.split("/")[-1]
-        destination_key = f"{destination_directory}{filename}"
-
-        # COPY
-        s3_client.copy_object(
-            Bucket=bucket,
-            CopySource={"Bucket": bucket, "Key": source_key},
-            Key=destination_key
-        )
-
-        # DELETE (only after successful copy)
-        s3_client.delete_object(
-            Bucket=bucket,
-            Key=source_key
-        )
-
-        return f"s3a://{bucket}/{destination_key}"
-
-    except Exception as e:
-        logger.error(f"Error moving file : {str(e)}")
-        traceback_message = traceback.format_exc()
-        print(traceback_message)
-        raise e
+    return f"s3a://{bucket}/{destination_key}"
