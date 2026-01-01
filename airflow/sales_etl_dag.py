@@ -36,7 +36,7 @@ def validate_sales_data():
     cursor.close()
     connection.close()
 
-# Define DAG attributes
+# Define DAG attributes and tasks
 with DAG(
     dag_id="retail_sales_batch_etl_local",
     default_args=default_args,
@@ -74,5 +74,7 @@ with DAG(
         python_callable=validate_sales_data
     )
 
+    # DAG flow
     wait_for_sales_data >> run_spark_etl >> validate_data
+
 
