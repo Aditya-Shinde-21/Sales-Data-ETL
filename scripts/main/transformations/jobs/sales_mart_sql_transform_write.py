@@ -2,7 +2,6 @@ from pyspark.sql.functions import *
 from pyspark.sql.window import Window
 from pyspark.storagelevel import StorageLevel
 from resources.dev import config
-from scripts.main.utility.encrypt_decrypt import decrypt
 from scripts.main.write.database_write import DatabaseWriter
 
 # Calculation for sales team mart
@@ -49,4 +48,5 @@ def sales_mart_calculation_table_write(final_sales_team_data_mart_df):
     # Write the Data into MySQL customers_data_mart table
     db_writer = DatabaseWriter(url = config.url, properties = config.properties)
     db_writer.write_dataframe(result_df, config.sales_team_data_mart_table)
+
     result_df.unpersist(blocking=True)
